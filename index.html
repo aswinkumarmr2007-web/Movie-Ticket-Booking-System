@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>CineMark Theatre - Movie Ticket Booking System</title>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{
+    font-family:Arial,Helvetica,sans-serif;
+    background:#07111f;
+    color:#fff;
+}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer}
+
+.hidden{display:none!important}
+
+header{
+    background:#020617;
+    min-height:70px;
+    padding:12px 4%;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:15px;
+    position:sticky;
+    top:0;
+    z-index:1000;
+    border-bottom:1px solid #26354d;
+}
+
+.logo{
+    font-size:25px;
+    font-weight:bold;
+    color:#facc15;
+    white-space:nowrap;
+}
+
+.logo span{color:#fff}
+
+nav{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:4px;
+    flex-wrap:wrap;
+}
+
+nav button{
+    border:0;
+    background:transparent;
+    color:#e2e8f0;
+    padding:9px 10px;
+    border-radius:6px;
+}
+
+nav button:hover{
+    background:#1e293b;
+    color:#facc15;
+}
+
+.user-badge{
+    background:#1e293b;
+    padding:8px 12px;
+    border-radius:20px;
+    color:#facc15;
+    font-size:13px;
+}
+
+.container{
+    width:92%;
+    max-width:1350px;
+    margin:30px auto;
+}
+
+.hero{
+    min-height:430px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    text-align:center;
+    background:
+    radial-gradient(circle at 20% 20%,#312e81,transparent 30%),
+    radial-gradient(circle at 80% 70%,#7c2d12,transparent 30%),
+    #020617;
+    padding:40px 20px;
+}
+
+.hero h1{
+    font-size:48px;
+    margin-bottom:12px;
+}
+
+.hero p{
+    color:#cbd5e1;
+    font-size:18px;
+}
+
+.search{
+    width:min(650px,95%);
+    padding:16px 22px;
+    border-radius:30px;
+    border:1px solid #475569;
+    background:#0f172a;
+    color:white;
+    margin-top:25px;
+    outline:none;
+}
+
+.section-title{
+    color:#facc15;
+    margin:30px 0 18px;
+}
+
+.grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(230px,1fr));
+    gap:20px;
+}
+
+.card{
+    background:#111c2d;
+    border:1px solid #2a3a53;
+    border-radius:14px;
+    overflow:hidden;
+    transition:.2s;
+}
+
+.card:hover{
+    transform:translateY(-4px);
+    box-shadow:0 15px 35px #0008;
+}
+
+.poster{
+    height:270px;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    font-size:75px;
+    background:linear-gradient(135deg,#312e81,#581c87);
+}
+
+.card-content{
+    padding:17px;
+}
+
+.card-content h3{
+    margin-bottom:8px;
+}
+
+.card-content p{
+    color:#cbd5e1;
+    margin:7px 0;
+    font-size:14px;
+}
+
+.rating{
+    color:#facc15;
+}
+
+.btn{
+    border:0;
+    border-radius:7px;
+    padding:10px 15px;
+    margin:5px 3px 0 0;
+    font-weight:bold;
+}
+
+.primary{background:#facc15;color:#111827}
+.success{background:#22c55e;color:white}
+.danger{background:#ef4444;color:white}
+.info{background:#3b82f6;color:white}
+.secondary{background:#475569;color:white}
+
+.panel{
+    background:#111c2d;
+    border:1px solid #2a3a53;
+    border-radius:14px;
+    padding:24px;
+}
+
+.form-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(210px,1fr));
+    gap:15px;
+}
+
+label{
+    display:block;
+    color:#cbd5e1;
+    margin:7px 0;
+}
+
+input,select,textarea{
+    width:100%;
+    padding:12px;
+    border-radius:7px;
+    border:1px solid #475569;
+    background:#081221;
+    color:white;
+    outline:none;
+}
+
+textarea{
+    min-height:90px;
+}
+
+.screen{
+    width:70%;
+    margin:30px auto;
+    text-align:center;
+    padding:10px;
+    background:white;
+    color:#111;
+    border-radius:50%;
+    box-shadow:0 0 25px #fff6;
+}
+
+.seat-area{
+    max-width:800px;
+    margin:auto;
+}
+
+.seat-row{
+    display:flex;
+    justify-content:center;
+    gap:5px;
+    margin:7px;
+}
+
+.seat{
+    width:43px;
+    height:34px;
+    border:0;
+    border-radius:7px 7px 3px 3px;
+    color:white;
+    font-size:9px;
+}
+
+.seat:hover{
+    transform:scale(1.08);
+}
+
+.regular{background:#16a34a}
+.premium{background:#2563eb}
+.vip{background:#9333ea}
+
+.selected{
+    background:#facc15!important;
+    color:#111!important;
+}
+
+.booked{
+    background:#dc2626!important;
+    cursor:not-allowed;
+}
+
+.legend{
+    display:flex;
+    justify-content:center;
+    flex-wrap:wrap;
+    gap:15px;
+    margin:20px;
+}
+
+.legend-item{
+    display:flex;
+    align-items:center;
+    gap:5px;
+    color:#cbd5e1;
+    font-size:13px;
+}
+
+.dot{
+    width:16px;
+    height:16px;
+    border-radius:4px;
+}
+
+.summary{
+    background:#07111f;
+    border-radius:10px;
+    padding:20px;
+    margin-top:25px;
+}
+
+.summary p{
+    margin:8px 0;
+    color:#cbd5e1;
+}
+
+.total{
+    color:#facc15!important;
+    font-size:24px;
+    font-weight:bold;
+}
+
+.food-grid{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(170px,1fr));
+    gap:12px;
+}
+
+.food{
+    background:#07111f;
+    border:1px solid #334155;
+    border-radius:9px;
+    padding:14px;
+    color:#cbd5e1;
+}
+
+.food input{
+    width:auto;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:#000c;
+    z-index:3000;
+    align-items:center;
+    justify-content:center;
+    padding:15px;
+}
+
+.modal.active{
+    display:flex;
+}
+
+.modal-box{
+    width:min(650px,95%);
+    max-height:92vh;
+    overflow:auto;
+    background:#111c2d;
+    border:1px solid #40506a;
+    border-radius:15px;
+    padding:25px;
+}
+
+.close{
+    float:right;
+    border:0;
+    background:#ef4444;
+    color:white;
+    padding:7px 11px;
+    border-radius:5px;
+}
+
+.ticket{
+    background:white;
+    color:#111;
+    padding:25px;
+    border-radius:12px;
+}
+
+.ticket h2{
+    color:#6d28d9;
+}
+
+.ticket hr{
+    border:0;
+    border-top:1px dashed #64748b;
+    margin:15px 0;
+}
+
+.ticket p{
+    margin:7px 0;
+}
+
+.booking-id{
+    color:#dc2626;
+    font-size:20px;
+    font-weight:bold;
+}
+
+#qrcode{
+    display:flex;
+    justify-content:center;
+    margin:20px;
+}
+
+.history{
+    background:#111c2d;
+    border:1px solid #2a3a53;
+    border-left:5px solid #facc15;
+    border-radius:10px;
+    padding:18px;
+    margin:12px 0;
+}
+
+.history p{
+    margin:7px 0;
+    color:#cbd5e1;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(190px,1fr));
+    gap:15px;
+}
+
+.stat{
+    background:#111c2d;
+    border:1px solid #2a3a53;
+    padding:22px;
+    border-radius:12px;
+}
+
+.stat h2{
+    color:#facc15;
+    font-size:30px;
+    margin-top:10px;
+}
+
+.auth{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:
+    radial-gradient(circle,#312e81,#020617 65%);
+}
+
+.auth-box{
+    width:min(440px,92%);
+    background:#111c2d;
+    border:1px solid #40506a;
+    border-radius:18px;
+    padding:30px;
+}
+
+.auth-box h1{
+    color:#facc15;
+    text-align:center;
+    margin-bottom:25px;
+}
+
+.auth-box input{
+    margin-bottom:12px;
+}
+
+.auth-box p{
+    color:#94a3b8;
+    text-align:center;
+    margin-top:15px;
+}
+
+.link{
+    color:#facc15;
+    cursor:pointer;
+}
+
+.admin-table{
+    width:100%;
+    border-collapse:collapse;
+    margin-top:15px;
+}
+
+.admin-table th,
+.admin-table td{
+    border:1px solid #334155;
+    padding:10px;
+    text-align:left;
+}
+
+.admin-table th{
+    background:#020617;
+    color:#facc15;
+}
+
+.notification{
+    position:fixed;
+    right:20px;
+    bottom:20px;
+    background:#16a34a;
+    color:white;
+    padding:14px 20px;
+    border-radius:8px;
+    display:none;
+    z-index:5000;
+}
+
+.notification.show{
+    display:block;
+}
+
+footer{
+    text-align:center;
+    padding:40px;
+    margin-top:50px;
+    background:#020617;
+    color:#64748b;
+}
+
+@media(max-width:700px){
+    header{
+        flex-direction:column;
+    }
+
+    .hero h1{
+        font-size:32px;
+    }
+
+    .seat{
+        width:28px;
+        height:28px;
+        font-size:7px;
+    }
+
+    .screen{
+        width:90%;
+    }
+
+    .admin-table{
+        font-size:11px;
+    }
+}
+</style>
+</head>
+
+<body>
+
+<!-- =====================================================
+LOGIN / REGISTER
+===================================================== -->
+
+<section id="authPage" class="auth">
+
+<div class="auth-box">
+
+<h1>🎬 CineMark Theatre</h1>
+
+<div id="loginForm">
+
+<input id="loginEmail" type="email" placeholder="Email">
+
+<input id="loginPassword" type="password" placeholder="Password">
+
+<button class="btn primary" style="width:100%" onclick="login()">
+Login
+</button>
+
+<p>
+New customer?
+<span class="link" onclick="showRegister()">Create Account</span>
+</p>
+
+<hr style="border-color:#334155;margin:20px 0">
+
+<p style="font-size:12px">
+Customer Login<br>
+user@gmail.com / 1234
+</p>
+
+<p style="font-size:12px">
+Admin Login<br>
+admin@cineMark.com / admin123
+</p>
+
+</div>
+
+
+<div id="registerForm" class="hidden">
+
+<input id="registerName" placeholder="Full Name">
+
+<input id="registerEmail" type="email" placeholder="Email">
+
+<input id="registerPhone" placeholder="Mobile Number">
+
+<input id="registerPassword" type="password" placeholder="Password">
+
+<button class="btn primary" style="width:100%" onclick="register()">
+Create Account
+</button>
+
+<p>
+Already have an account?
+<span class="link" onclick="showLogin()">Login</span>
+</p>
+
+</div>
+
+</div>
+</section>
+
+
+<!-- =====================================================
+MAIN APP
+===================================================== -->
+
+<div id="app" class="hidden">
+
+<header>
+
+<div class="logo">
+🎬 <span>Cine</span>Mark
+</div>
+
+<nav>
+
+<button onclick="showPage('homePage')">Home</button>
+
+<button onclick="openBooking()">Book Ticket</button>
+
+<button onclick="showBookings()">Bookings</button>
+
+<button onclick="showFavorites()">❤️ Favorites</button>
+
+<button onclick="showProfile()">Profile</button>
+
+<button id="adminButton" class="hidden" onclick="showAdmin()">
+Admin
+</button>
+
+<span id="userBadge" class="user-badge"></span>
+
+<button onclick="logout()">Logout</button>
+
+</nav>
+
+</header>
+
+
+<!-- =====================================================
+HOME
+===================================================== -->
+
+<section id="homePage">
+
+<div class="hero">
+
+<div>
+
+<h1>🎬 CineMark Theatre Movie Booking</h1>
+
+<p>
+Book movies, choose seats, order food and get QR tickets.
+</p>
+
+<input
+id="searchInput"
+class="search"
+placeholder="🔍 Search movie or genre..."
+onkeyup="searchMovies()">
+
+</div>
+
+</div>
+
+
+<div class="container">
+
+<h2 class="section-title">
+🔥 Latest 2026 Movies
+</h2>
+
+<div id="movieGrid" class="grid"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+BOOKING PAGE
+===================================================== -->
+
+<section id="bookingPage" class="container hidden">
+
+<div class="panel">
+
+<h2 class="section-title">
+🎟️ Movie Ticket Booking
+</h2>
+
+<div class="form-grid">
+
+<div>
+
+<label>Movie</label>
+
+<select id="movieSelect" onchange="movieChanged()"></select>
+
+</div>
+
+<div>
+
+<label>Theatre</label>
+
+<select id="theatreSelect">
+
+<option>PVR Cinemas - Chennai</option>
+<option>INOX Phoenix - Chennai</option>
+<option>AGS Cinemas - Chennai</option>
+<option>Rohini Silver Screens</option>
+<option>Galaxy Multiplex</option>
+
+</select>
+
+</div>
+
+<div>
+
+<label>Date</label>
+
+<input id="bookingDate" type="date">
+
+</div>
+
+<div>
+
+<label>Show Time</label>
+
+<select id="showTime">
+
+<option>10:00 AM</option>
+<option>01:30 PM</option>
+<option>04:30 PM</option>
+<option>07:30 PM</option>
+<option>10:30 PM</option>
+
+</select>
+
+</div>
+
+</div>
+
+
+<h3 style="margin-top:30px">
+💺 Select Your Seats
+</h3>
+
+<div class="screen">
+SCREEN
+</div>
+
+<div class="legend">
+
+<div class="legend-item">
+<span class="dot regular"></span>
+Regular ₹150
+</div>
+
+<div class="legend-item">
+<span class="dot premium"></span>
+Premium ₹200
+</div>
+
+<div class="legend-item">
+<span class="dot vip"></span>
+VIP ₹300
+</div>
+
+<div class="legend-item">
+<span class="dot booked"></span>
+Booked
+</div>
+
+</div>
+
+<div id="seatContainer" class="seat-area"></div>
+
+
+<h3 style="margin-top:30px">
+🍿 Food & Beverages
+</h3>
+
+<div class="food-grid">
+
+<label class="food">
+<input type="checkbox" value="Popcorn" data-price="150">
+🍿 Popcorn ₹150
+</label>
+
+<label class="food">
+<input type="checkbox" value="Combo" data-price="300">
+🥤 Popcorn + Coke Combo ₹300
+</label>
+
+<label class="food">
+<input type="checkbox" value="Nachos" data-price="180">
+🧀 Nachos ₹180
+</label>
+
+<label class="food">
+<input type="checkbox" value="Burger" data-price="220">
+🍔 Burger ₹220
+</label>
+
+<label class="food">
+<input type="checkbox" value="Pizza" data-price="280">
+🍕 Pizza ₹280
+</label>
+
+<label class="food">
+<input type="checkbox" value="Ice Cream" data-price="120">
+🍨 Ice Cream ₹120
+</label>
+
+</div>
+
+
+<div class="summary">
+
+<h3>
+Booking Summary
+</h3>
+
+<p>
+Movie:
+<strong id="summaryMovie">-</strong>
+</p>
+
+<p>
+Theatre:
+<strong id="summaryTheatre">-</strong>
+</p>
+
+<p>
+Date:
+<strong id="summaryDate">-</strong>
+</p>
+
+<p>
+Show:
+<strong id="summaryShow">-</strong>
+</p>
+
+<p>
+Seats:
+<strong id="summarySeats">None</strong>
+</p>
+
+<p>
+Food:
+<strong id="summaryFood">None</strong>
+</p>
+
+<p>
+Seat Amount:
+₹<strong id="summarySeatAmount">0</strong>
+</p>
+
+<p>
+Food Amount:
+₹<strong id="summaryFoodAmount">0</strong>
+</p>
+
+<p>
+Discount:
+₹<strong id="summaryDiscount">0</strong>
+</p>
+
+
+<div style="display:flex;gap:7px;margin-top:12px">
+
+<input
+id="couponInput"
+placeholder="Coupon code">
+
+<button class="btn info" onclick="applyCoupon()">
+Apply
+</button>
+
+</div>
+
+<p class="total">
+Total:
+₹<span id="summaryTotal">0</span>
+</p>
+
+<button
+class="btn primary"
+onclick="openPayment()">
+Proceed to Payment
+</button>
+
+</div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+BOOKINGS
+===================================================== -->
+
+<section id="bookingsPage" class="container hidden">
+
+<h2 class="section-title">
+📋 My Bookings
+</h2>
+
+<div id="bookingHistory"></div>
+
+</section>
+
+
+<!-- =====================================================
+FAVORITES
+===================================================== -->
+
+<section id="favoritesPage" class="container hidden">
+
+<h2 class="section-title">
+❤️ Favourite Movies
+</h2>
+
+<div id="favoriteGrid" class="grid"></div>
+
+</section>
+
+
+<!-- =====================================================
+PROFILE
+===================================================== -->
+
+<section id="profilePage" class="container hidden">
+
+<div class="panel">
+
+<h2 class="section-title">
+👤 My Profile
+</h2>
+
+<div class="form-grid">
+
+<div>
+
+<label>Name</label>
+
+<input id="profileName">
+
+</div>
+
+<div>
+
+<label>Email</label>
+
+<input id="profileEmail" disabled>
+
+</div>
+
+<div>
+
+<label>Phone</label>
+
+<input id="profilePhone">
+
+</div>
+
+</div>
+
+<button class="btn success" onclick="saveProfile()">
+Save Profile
+</button>
+
+
+<hr style="border-color:#334155;margin:30px 0">
+
+
+<h3>💰 CineMark Wallet</h3>
+
+<p style="margin:15px 0;color:#cbd5e1">
+
+Wallet Balance:
+<strong style="color:#facc15;font-size:22px">
+₹<span id="walletBalance">0</span>
+</strong>
+
+</p>
+
+<button class="btn info" onclick="addWallet(500)">
+Add ₹500
+</button>
+
+<button class="btn info" onclick="addWallet(1000)">
+Add ₹1000
+</button>
+
+
+<hr style="border-color:#334155;margin:30px 0">
+
+
+<h3>⭐ My Reviews</h3>
+
+<div id="myReviews"></div>
+
+</div>
+
+</section>
+
+
+<!-- =====================================================
+ADMIN
+===================================================== -->
+
+<section id="adminPage" class="container hidden">
+
+<h2 class="section-title">
+👨‍💼 Admin Dashboard
+</h2>
+
+<div class="stats">
+
+<div class="stat">
+<p>Total Users</p>
+<h2 id="statUsers">0</h2>
+</div>
+
+<div class="stat">
+<p>Total Bookings</p>
+<h2 id="statBookings">0</h2>
+</div>
+
+<div class="stat">
+<p>Confirmed</p>
+<h2 id="statConfirmed">0</h2>
+</div>
+
+<div class="stat">
+<p>Cancelled</p>
+<h2 id="statCancelled">0</h2>
+</div>
+
+<div class="stat">
+<p>Revenue</p>
+<h2>₹<span id="statRevenue">0</span></h2>
+</div>
+
+</div>
+
+
+<div class="panel" style="margin-top:25px">
+
+<h3 class="section-title">
+➕ Add New Movie
+</h3>
+
+<div class="form-grid">
+
+<input id="newMovieName" placeholder="Movie Name">
+
+<input id="newMovieGenre" placeholder="Genre">
+
+<input id="newMovieRating" placeholder="Rating">
+
+<input id="newMovieDuration" placeholder="Duration">
+
+<input id="newMoviePrice" type="number" placeholder="Starting Price">
+
+<input id="newMovieEmoji" placeholder="Poster Emoji">
+
+</div>
+
+<button class="btn success" onclick="addMovie()">
+Add Movie
+</button>
+
+</div>
+
+
+<div class="panel" style="margin-top:25px">
+
+<h3 class="section-title">
+🎬 Movie Management
+</h3>
+
+<div id="adminMovies"></div>
+
+</div>
+
+
+<div class="panel" style="margin-top:25px">
+
+<h3 class="section-title">
+📋 All Bookings
+</h3>
+
+<div style="overflow:auto">
+
+<table class="admin-table">
+
+<thead>
+
+<tr>
+<th>ID</th>
+<th>User</th>
+<th>Movie</th>
+<th>Date</th>
+<th>Seats</th>
+<th>Total</th>
+<th>Status</th>
+</tr>
+
+</thead>
+
+<tbody id="adminBookingTable"></tbody>
+
+</table>
+
+</div>
+
+</div>
+
+</section>
+
+
+<footer>
+
+<p>© 2026 CineMark Theatre Movie Ticket Booking System</p>
+<p>OOAD Advanced College Project - K. Ramakrishnan College of Technology</p>
+
+</footer>
+
+</div>
+
+
+<!-- =====================================================
+PAYMENT MODAL
+===================================================== -->
+
+<div id="paymentModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closePayment()">✕</button>
+
+<h2 class="section-title">
+💳 Payment
+</h2>
+
+<h3>
+Payable Amount:
+₹<span id="paymentAmount">0</span>
+</h3>
+
+<br>
+
+<div class="form-grid">
+
+<button class="btn info"
+onclick="selectPayment('UPI')">
+📱 UPI
+</button>
+
+<button class="btn info"
+onclick="selectPayment('Credit Card')">
+💳 Credit Card
+</button>
+
+<button class="btn info"
+onclick="selectPayment('Debit Card')">
+💳 Debit Card
+</button>
+
+<button class="btn info"
+onclick="selectPayment('Net Banking')">
+🏦 Net Banking
+</button>
+
+</div>
+
+<p id="selectedPayment"
+style="color:#facc15;margin:20px 0">
+Select payment method
+</p>
+
+<input
+id="paymentCustomer"
+placeholder="Customer Name">
+
+<input
+id="paymentPhone"
+placeholder="Mobile Number"
+style="margin-top:10px">
+
+<button
+id="confirmPaymentButton"
+class="btn success hidden"
+onclick="confirmBooking()">
+
+💳 Pay & Confirm Booking
+
+</button>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+TICKET MODAL
+===================================================== -->
+
+<div id="ticketModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeTicket()">✕</button>
+
+<div id="ticketContent"></div>
+
+<div style="text-align:center;margin-top:15px">
+
+<button class="btn primary" onclick="window.print()">
+🖨️ Print Ticket
+</button>
+
+</div>
+
+</div>
+
+</div>
+
+
+<!-- =====================================================
+REVIEW MODAL
+===================================================== -->
+
+<div id="reviewModal" class="modal">
+
+<div class="modal-box">
+
+<button class="close" onclick="closeReview()">✕</button>
+
+<h2 class="section-title">
+⭐ Rate Movie
+</h2>
+
+<input id="reviewBookingId" type="hidden">
+
+<select id="reviewRating">
+
+<option value="5">⭐⭐⭐⭐⭐ Excellent</option>
+<option value="4">⭐⭐⭐⭐ Very Good</option>
+<option value="3">⭐⭐⭐ Good</option>
+<option value="2">⭐⭐ Poor</option>
+<option value="1">⭐ Very Poor</option>
+
+</select>
+
+<textarea
+id="reviewText"
+placeholder="Write your review..."
+style="margin-top:12px">
+</textarea>
+
+<button class="btn success" onclick="submitReview()">
+Submit Review
+</button>
+
+</div>
+
+</div>
+
+
+<div id="notification" class="notification"></div>
+
+
+<script>
+
+/* =====================================================
+DATA MODELS
+===================================================== */
+
+class User{
+
+constructor(id,name,email,password,phone,role="customer"){
+
+this.id=id;
+this.name=name;
+this.email=email;
+this.password=password;
+this.phone=phone;
+this.role=role;
+this.wallet=0;
+this.favorites=[];
+this.reviews=[];
+
+}
+
+}
+
+
+class Movie{
+
+constructor(
+id,
+name,
+genre,
+rating,
+duration,
+price,
+emoji,
+year=2026
+){
+
+this.id=id;
+this.name=name;
+this.genre=genre;
+this.rating=rating;
+this.duration=duration;
+this.price=price;
+this.emoji=emoji;
+this.year=year;
+
+}
+
+}
+
+
+class Booking{
+
+constructor(data){
+
+Object.assign(this,data);
+
+this.createdAt=
+new Date().toLocaleString();
+
+this.status="Confirmed";
+
+}
+
+}
+
+
+/* =====================================================
+MOVIE DATA
+===================================================== */
+
+let movies=[
+
+new Movie(
+1,
+"Avatar: Fire and Ash",
+"Sci-Fi / Adventure",
+"8.8",
+"2h 45m",
+200,
+"🌋"
+),
+
+new Movie(
+2,
+"Avengers: Secret Wars",
+"Action / Superhero",
+"9.2",
+"2h 50m",
+250,
+"🦸"
+),
+
+new Movie(
+3,
+"Spider-Man",
+"Action / Adventure",
+"8.9",
+"2h 30m",
+220,
+"🕷️"
+),
+
+new Movie(
+4,
+"Jurassic World",
+"Adventure / Sci-Fi",
+"8.5",
+"2h 20m",
+200,
+"🦖"
+),
+
+new Movie(
+5,
+"Mission Impossible",
+"Action / Thriller",
+"8.7",
+"2h 35m",
+230,
+"💥"
+),
+
+new Movie(
+6,
+"The Batman",
+"Action / Crime",
+"8.6",
+"2h 40m",
+210,
+"🦇"
+),
+
+new Movie(
+7,
+"Leo 2",
+"Action",
+"8.4",
+"2h 40m",
+180,
+"🔥"
+),
+
+new Movie(
+8,
+"Indian 3",
+"Action / Drama",
+"8.3",
+"2h 50m",
+170,
+"⭐"
+),
+
+new Movie(
+9,
+"Fantastic Four",
+"Superhero / Sci-Fi",
+"8.5",
+"2h 20m",
+210,
+"🚀"
+),
+
+new Movie(
+10,
+"Toy Story 5",
+"Animation / Family",
+"8.2",
+"1h 45m",
+160,
+"🤠"
+)
+
+];
+
+
+/* =====================================================
+GLOBAL VARIABLES
+===================================================== */
+
+let currentUser=null;
+
+let selectedMovie=null;
+
+let selectedSeats=[];
+
+let paymentMethod="";
+
+let discount=0;
+
+
+/* =====================================================
+STORAGE
+===================================================== */
+
+function getUsers(){
+
+return JSON.parse(
+localStorage.getItem("CINE_USERS")||"[]"
+);
+
+}
+
+function saveUsers(data){
+
+localStorage.setItem(
+"CINE_USERS",
+JSON.stringify(data)
+);
+
+}
+
+function getBookings(){
+
+return JSON.parse(
+localStorage.getItem("CINE_BOOKINGS")||"[]"
+);
+
+}
+
+function saveBookings(data){
+
+localStorage.setItem(
+"CINE_BOOKINGS",
+JSON.stringify(data)
+);
+
+}
+
+function saveMovieData(){
+
+localStorage.setItem(
+"CINE_MOVIES",
+JSON.stringify(movies)
+);
+
+}
+
+function loadMovieData(){
+
+let saved=
+JSON.parse(
+localStorage.getItem("CINE_MOVIES")||"null"
+);
+
+if(saved){
+
+movies=saved;
+
+}
+
+}
+
+
+/* =====================================================
+INITIALIZATION
+===================================================== */
+
+function initialize(){
+
+loadMovieData();
+
+let u=getUsers();
+
+if(!u.length){
+
+u=[
+
+new User(
+1,
+"Demo Customer",
+"user@gmail.com",
+"1234",
+"9876543210"
+),
+
+new User(
+2,
+"System Administrator",
+"admin@cinemark.com",
+"admin123",
+"9999999999",
+"admin"
+)
+
+];
+
+saveUsers(u);
+
+}
+
+let saved=
+JSON.parse(
+localStorage.getItem("CINE_CURRENT")||"null"
+);
+
+if(saved){
+
+currentUser=saved;
+
+startApplication();
+
+}
+
+}
+
+
+/* =====================================================
+AUTHENTICATION
+===================================================== */
+
+function showRegister(){
+
+loginForm.classList.add("hidden");
+registerForm.classList.remove("hidden");
+
+}
+
+function showLogin(){
+
+registerForm.classList.add("hidden");
+loginForm.classList.remove("hidden");
+
+}
+
+function register(){
+
+let name=
+registerName.value.trim();
+
+let email=
+registerEmail.value.trim();
+
+let phone=
+registerPhone.value.trim();
+
+let password=
+registerPassword.value;
+
+if(!name||!email||!phone||!password){
+
+alert("Please fill all fields.");
+return;
+
+}
+
+let users=getUsers();
+
+if(
+users.some(
+u=>u.email.toLowerCase()===email.toLowerCase()
+)
+){
+
+alert("Email already registered.");
+return;
+
+}
+
+let user=new User(
+Date.now(),
+name,
+email,
+password,
+phone
+);
+
+users.push(user);
+
+saveUsers(users);
+
+alert("Registration successful.");
+
+showLogin();
+
+}
+
+function login(){
+
+let email=
+loginEmail.value.trim();
+
+let password=
+loginPassword.value;
+
+let user=getUsers().find(
+u=>
+u.email.toLowerCase()===email.toLowerCase() &&
+u.password===password
+);
+
+if(!user){
+
+alert("Invalid email or password.");
+return;
+
+}
+
+currentUser=user;
+
+localStorage.setItem(
+"CINE_CURRENT",
+JSON.stringify(user)
+);
+
+startApplication();
+
+}
+
+function logout(){
+
+localStorage.removeItem("CINE_CURRENT");
+
+location.reload();
+
+}
+
+
+/* =====================================================
+START APPLICATION
+===================================================== */
+
+function startApplication(){
+
+authPage.classList.add("hidden");
+app.classList.remove("hidden");
+
+userBadge.innerText=
+"👤 "+currentUser.name;
+
+if(currentUser.role==="admin"){
+
+adminButton.classList.remove("hidden");
+
+}
+
+showPage("homePage");
+
+displayMovies();
+
+}
+
+
+/* =====================================================
+PAGE MANAGEMENT
+===================================================== */
+
+const pageIds=[
+"homePage",
+"bookingPage",
+"bookingsPage",
+"favoritesPage",
+"profilePage",
+"adminPage"
+];
+
+function showPage(id){
+
+pageIds.forEach(
+x=>document.getElementById(x).classList.add("hidden")
+);
+
+document.getElementById(id).classList.remove("hidden");
+
+}
+
+
+/* =====================================================
+MOVIES
+===================================================== */
+
+function displayMovies(list=movies){
+
+movieGrid.innerHTML="";
+
+list.forEach(movie=>{
+
+let favorite=
+currentUser.favorites &&
+currentUser.favorites.includes(movie.id);
+
+movieGrid.innerHTML+=`
+
+<div class="card">
+
+<div class="poster">
+${movie.emoji}
+</div>
+
+<div class="card-content">
+
+<h3>${movie.name}</h3>
+
+<div class="rating">
+⭐ ${movie.rating}/10
+</div>
+
+<p>🎭 ${movie.genre}</p>
+
+<p>⏱️ ${movie.duration}</p>
+
+<p>📅 ${movie.year}</p>
+
+<p>🎟️ From ₹${movie.price}</p>
+
+<button
+class="btn primary"
+onclick="startBooking(${movie.id})">
+
+Book Ticket
+
+</button>
+
+<button
+class="btn secondary"
+onclick="toggleFavorite(${movie.id})">
+
+${favorite?"❤️":"🤍"}
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+function searchMovies(){
+
+let value=
+searchInput.value.toLowerCase();
+
+displayMovies(
+
+movies.filter(movie=>
+
+movie.name.toLowerCase().includes(value) ||
+
+movie.genre.toLowerCase().includes(value)
+
+)
+
+);
+
+}
+
+
+/* =====================================================
+FAVORITES
+===================================================== */
+
+function toggleFavorite(id){
+
+currentUser.favorites=
+currentUser.favorites||[];
+
+if(
+currentUser.favorites.includes(id)
+){
+
+currentUser.favorites=
+currentUser.favorites.filter(
+x=>x!==id
+);
+
+}else{
+
+currentUser.favorites.push(id);
+
+}
+
+updateCurrentUser();
+
+displayMovies();
+
+notify("Favorites updated.");
+
+}
+
+function showFavorites(){
+
+showPage("favoritesPage");
+
+let fav=
+currentUser.favorites||[];
+
+let list=
+movies.filter(
+m=>fav.includes(m.id)
+);
+
+favoriteGrid.innerHTML="";
+
+if(!list.length){
+
+favoriteGrid.innerHTML=
+"<p>No favourite movies yet.</p>";
+
+return;
+
+}
+
+list.forEach(movie=>{
+
+favoriteGrid.innerHTML+=`
+
+<div class="card">
+
+<div class="poster">
+${movie.emoji}
+</div>
+
+<div class="card-content">
+
+<h3>${movie.name}</h3>
+
+<p>${movie.genre}</p>
+
+<p>⭐ ${movie.rating}</p>
+
+<button
+class="btn primary"
+onclick="startBooking(${movie.id})">
+
+Book
+
+</button>
+
+</div>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+USER UPDATE
+===================================================== */
+
+function updateCurrentUser(){
+
+let users=getUsers();
+
+let index=
+users.findIndex(
+u=>u.id===currentUser.id
+);
+
+if(index!==-1){
+
+users[index]=currentUser;
+
+saveUsers(users);
+
+}
+
+localStorage.setItem(
+"CINE_CURRENT",
+JSON.stringify(currentUser)
+);
+
+}
+
+
+/* =====================================================
+BOOKING PAGE
+===================================================== */
+
+function startBooking(id){
+
+selectedMovie=
+movies.find(m=>m.id===id);
+
+openBooking();
+
+}
+
+function openBooking(){
+
+showPage("bookingPage");
+
+if(!selectedMovie){
+
+selectedMovie=movies[0];
+
+}
+
+movieSelect.innerHTML="";
+
+movies.forEach(movie=>{
+
+movieSelect.innerHTML+=`
+
+<option value="${movie.id}">
+${movie.name} - ₹${movie.price}
+</option>
+
+`;
+
+});
+
+movieSelect.value=
+selectedMovie.id;
+
+let today=
+new Date()
+.toISOString()
+.split("T")[0];
+
+bookingDate.min=today;
+
+if(!bookingDate.value){
+
+bookingDate.value=today;
+
+}
+
+selectedSeats=[];
+
+createSeats();
+
+updateSummary();
+
+}
+
+
+/* =====================================================
+MOVIE CHANGE
+===================================================== */
+
+function movieChanged(){
+
+selectedMovie=
+movies.find(
+m=>m.id==movieSelect.value
+);
+
+selectedSeats=[];
+
+createSeats();
+
+updateSummary();
+
+}
+
+
+/* =====================================================
+SEAT SYSTEM
+===================================================== */
+
+function getBookedSeats(){
+
+let bookings=getBookings();
+
+let booked=[];
+
+bookings.forEach(booking=>{
+
+if(
+booking.movieId===selectedMovie.id &&
+booking.date===bookingDate.value &&
+booking.show===showTime.value &&
+booking.status==="Confirmed"
+){
+
+booking.seats.forEach(
+seat=>booked.push(seat.number)
+);
+
+}
+
+});
+
+return booked;
+
+}
+
+
+function createSeats(){
+
+seatContainer.innerHTML="";
+
+selectedSeats=[];
+
+let rows=[
+"A","B","C","D","E",
+"F","G","H","I","J"
+];
+
+let booked=getBookedSeats();
+
+rows.forEach(
+(rowName,rowIndex)=>{
+
+let row=
+document.createElement("div");
+
+row.className="seat-row";
+
+for(let number=1;number<=10;number++){
+
+let seatNumber=
+rowName+number;
+
+let type="Regular";
+let price=150;
+
+if(rowIndex>=3&&rowIndex<=6){
+
+type="Premium";
+price=200;
+
+}
+
+if(rowIndex>=7){
+
+type="VIP";
+price=300;
+
+}
+
+let button=
+document.createElement("button");
+
+button.className=
+"seat "+type.toLowerCase();
+
+button.innerText=seatNumber;
+
+let isBooked=
+booked.includes(seatNumber);
+
+if(isBooked){
+
+button.classList.add("booked");
+button.disabled=true;
+
+}
+
+let seatObject={
+number:seatNumber,
+type:type,
+price:price
+};
+
+button.onclick=()=>{
+
+if(
+selectedSeats.some(
+x=>x.number===seatNumber
+)
+){
+
+selectedSeats=
+selectedSeats.filter(
+x=>x.number!==seatNumber
+);
+
+button.classList.remove("selected");
+
+}else{
+
+selectedSeats.push(
+seatObject
+);
+
+button.classList.add("selected");
+
+}
+
+updateSummary();
+
+};
+
+row.appendChild(button);
+
+}
+
+seatContainer.appendChild(row);
+
+}
+
+);
+
+}
+
+
+/* =====================================================
+SUMMARY
+===================================================== */
+
+function getFood(){
+
+let food=[];
+
+document
+.querySelectorAll(".food input:checked")
+.forEach(item=>{
+
+food.push({
+
+name:item.value,
+
+price:
+Number(item.dataset.price)
+
+});
+
+});
+
+return food;
+
+}
+
+
+function updateSummary(){
+
+if(!selectedMovie)return;
+
+let food=getFood();
+
+let seatAmount=
+selectedSeats.reduce(
+(sum,seat)=>sum+seat.price,
+0
+);
+
+let foodAmount=
+food.reduce(
+(sum,item)=>sum+item.price,
+0
+);
+
+let total=
+Math.max(
+0,
+seatAmount+
+foodAmount-
+discount
+);
+
+summaryMovie.innerText=
+selectedMovie.name;
+
+summaryTheatre.innerText=
+theatreSelect.value;
+
+summaryDate.innerText=
+bookingDate.value||"-";
+
+summaryShow.innerText=
+showTime.value;
+
+summarySeats.innerText=
+selectedSeats.length
+?
+selectedSeats.map(
+s=>s.number
+).join(", ")
+:
+"None";
+
+summaryFood.innerText=
+food.length
+?
+food.map(
+f=>f.name
+).join(", ")
+:
+"None";
+
+summarySeatAmount.innerText=
+seatAmount;
+
+summaryFoodAmount.innerText=
+foodAmount;
+
+summaryDiscount.innerText=
+discount;
+
+summaryTotal.innerText=
+total;
+
+}
+
+
+/* =====================================================
+UPDATE WHEN SHOW / DATE CHANGES
+===================================================== */
+
+bookingDate.addEventListener(
+"change",
+()=>{
+
+createSeats();
+updateSummary();
+
+}
+);
+
+showTime.addEventListener(
+"change",
+()=>{
+
+createSeats();
+updateSummary();
+
+}
+);
+
+theatreSelect.addEventListener(
+"change",
+updateSummary
+);
+
+document
+.querySelectorAll(".food input")
+.forEach(
+x=>x.addEventListener(
+"change",
+updateSummary
+)
+);
+
+
+/* =====================================================
+COUPON
+===================================================== */
+
+function applyCoupon(){
+
+let code=
+couponInput.value
+.trim()
+.toUpperCase();
+
+let seatAmount=
+selectedSeats.reduce(
+(sum,s)=>sum+s.price,
+0
+);
+
+let foodAmount=
+getFood().reduce(
+(sum,f)=>sum+f.price,
+0
+);
+
+let subtotal=
+seatAmount+foodAmount;
+
+if(code==="CINE50"){
+
+discount=50;
+
+}
+else if(
+code==="CINE100" &&
+subtotal>=500
+){
+
+discount=100;
+
+}
+else if(code==="MOVIE20"){
+
+discount=
+Math.round(subtotal*0.20);
+
+}
+else{
+
+discount=0;
+
+alert(
+"Invalid coupon. Try CINE50, CINE100 or MOVIE20."
+);
+
+return;
+
+}
+
+notify("Coupon applied.");
+
+updateSummary();
+
+}
+
+
+/* =====================================================
+PAYMENT
+===================================================== */
+
+function openPayment(){
+
+if(!selectedSeats.length){
+
+alert("Please select at least one seat.");
+
+return;
+
+}
+
+if(!bookingDate.value){
+
+alert("Please select booking date.");
+
+return;
+
+}
+
+paymentAmount.innerText=
+summaryTotal.innerText;
+
+paymentModal.classList.add("active");
+
+paymentMethod="";
+
+confirmPaymentButton.classList.add("hidden");
+
+selectedPayment.innerText=
+"Select payment method";
+
+paymentCustomer.value=
+currentUser.name;
+
+paymentPhone.value=
+currentUser.phone;
+
+}
+
+function closePayment(){
+
+paymentModal.classList.remove("active");
+
+}
+
+function selectPayment(method){
+
+paymentMethod=method;
+
+selectedPayment.innerText=
+"Selected: "+method;
+
+confirmPaymentButton.classList.remove(
+"hidden"
+);
+
+}
+
+
+/* =====================================================
+CONFIRM BOOKING
+===================================================== */
+
+function confirmBooking(){
+
+if(!paymentMethod){
+
+alert("Select a payment method.");
+
+return;
+
+}
+
+let customer=
+paymentCustomer.value.trim();
+
+let phone=
+paymentPhone.value.trim();
+
+if(!customer||!phone){
+
+alert("Enter customer details.");
+
+return;
+
+}
+
+let total=
+Number(summaryTotal.innerText);
+
+let transaction=
+"TXN"+
+Date.now();
+
+let bookingId=
+"CB26-"+
+Math.random()
+.toString(36)
+.substring(2,8)
+.toUpperCase();
+
+let booking=
+new Booking({
+
+id:bookingId,
+
+userId:currentUser.id,
+
+customer:customer,
+
+phone:phone,
+
+movie:selectedMovie.name,
+
+movieId:selectedMovie.id,
+
+theatre:theatreSelect.value,
+
+date:bookingDate.value,
+
+show:showTime.value,
+
+seats:selectedSeats,
+
+food:getFood(),
+
+discount:discount,
+
+total:total,
+
+paymentMethod:paymentMethod,
+
+transaction:transaction,
+
+paymentStatus:"Paid"
+
+});
+
+let allBookings=
+getBookings();
+
+allBookings.push(booking);
+
+saveBookings(allBookings);
+
+closePayment();
+
+showTicket(booking);
+
+selectedSeats=[];
+
+discount=0;
+
+paymentMethod="";
+
+createSeats();
+
+updateSummary();
+
+notify("Booking confirmed.");
+
+}
+
+
+/* =====================================================
+QR TICKET
+===================================================== */
+
+function showTicket(booking){
+
+ticketContent.innerHTML=`
+
+<div class="ticket">
+
+<h2>🎬 CineMark Theatre 2026</h2>
+
+<p style="color:#16a34a;font-weight:bold">
+✓ BOOKING CONFIRMED
+</p>
+
+<hr>
+
+<p>Booking ID</p>
+
+<p class="booking-id">
+${booking.id}
+</p>
+
+<p>
+<strong>Customer:</strong>
+${booking.customer}
+</p>
+
+<p>
+<strong>Movie:</strong>
+${booking.movie}
+</p>
+
+<p>
+<strong>Theatre:</strong>
+${booking.theatre}
+</p>
+
+<p>
+<strong>Date:</strong>
+${booking.date}
+</p>
+
+<p>
+<strong>Show:</strong>
+${booking.show}
+</p>
+
+<p>
+<strong>Seats:</strong>
+${booking.seats
+.map(s=>s.number)
+.join(", ")}
+</p>
+
+<p>
+<strong>Food:</strong>
+${
+booking.food.length
+?
+booking.food.map(f=>f.name).join(", ")
+:
+"None"
+}
+</p>
+
+<p>
+<strong>Payment:</strong>
+${booking.paymentMethod}
+</p>
+
+<p>
+<strong>Transaction:</strong>
+${booking.transaction}
+</p>
+
+<hr>
+
+<p style="font-size:22px;font-weight:bold">
+Total Paid: ₹${booking.total}
+</p>
+
+<div id="qrcode"></div>
+
+<p style="text-align:center">
+Scan QR code to verify booking
+</p>
+
+<hr>
+
+<p style="text-align:center">
+Thank you for choosing CineMark Theatre.
+</p>
+
+</div>
+
+`;
+
+ticketModal.classList.add("active");
+
+setTimeout(()=>{
+
+qrcode.innerHTML="";
+
+new QRCode(
+qrcode,
+{
+text:
+"CINEMARK THEATRE|"+
+booking.id+
+"|"+
+booking.movie+
+"|"+
+booking.date+
+"|"+
+booking.show+
+"|"+
+booking.seats
+.map(s=>s.number)
+.join(","),
+
+width:180,
+height:180
+
+}
+);
+
+},100);
+
+}
+
+function closeTicket(){
+
+ticketModal.classList.remove("active");
+
+}
+
+
+/* =====================================================
+BOOKING HISTORY
+===================================================== */
+
+function showBookings(){
+
+showPage("bookingsPage");
+
+let list=
+getBookings()
+.filter(
+b=>b.userId===currentUser.id
+)
+.reverse();
+
+bookingHistory.innerHTML="";
+
+if(!list.length){
+
+bookingHistory.innerHTML=
+"<p>No bookings found.</p>";
+
+return;
+
+}
+
+list.forEach(booking=>{
+
+let seats=
+booking.seats
+.map(s=>s.number)
+.join(", ");
+
+bookingHistory.innerHTML+=`
+
+<div class="history">
+
+<h3>🎬 ${booking.movie}</h3>
+
+<p>
+Booking ID:
+<strong>${booking.id}</strong>
+</p>
+
+<p>
+Theatre: ${booking.theatre}
+</p>
+
+<p>
+Date: ${booking.date}
+</p>
+
+<p>
+Show: ${booking.show}
+</p>
+
+<p>
+Seats: ${seats}
+</p>
+
+<p>
+Amount:
+<strong>₹${booking.total}</strong>
+</p>
+
+<p>
+Status:
+<strong style="color:${
+booking.status==="Confirmed"
+?"#22c55e"
+:"#ef4444"
+}">
+${booking.status}
+</strong>
+</p>
+
+<button
+class="btn info"
+onclick='showTicket(${JSON.stringify(booking)})'>
+View Ticket
+</button>
+
+${
+booking.status==="Confirmed"
+?
+`
+<button
+class="btn danger"
+onclick="cancelBooking('${booking.id}')">
+Cancel
+</button>
+
+<button
+class="btn primary"
+onclick="openReview('${booking.id}')">
+⭐ Review
+</button>
+`
+:""
+}
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+CANCEL BOOKING
+===================================================== */
+
+function cancelBooking(id){
+
+if(
+!confirm(
+"Are you sure you want to cancel this booking?"
+)
+){
+
+return;
+
+}
+
+let bookings=getBookings();
+
+let booking=
+bookings.find(
+b=>b.id===id
+);
+
+if(booking){
+
+booking.status="Cancelled";
+
+booking.refundStatus=
+"Refund initiated";
+
+}
+
+saveBookings(bookings);
+
+showBookings();
+
+notify(
+"Booking cancelled. Refund initiated."
+);
+
+}
+
+
+/* =====================================================
+PROFILE
+===================================================== */
+
+function showProfile(){
+
+showPage("profilePage");
+
+profileName.value=
+currentUser.name;
+
+profileEmail.value=
+currentUser.email;
+
+profilePhone.value=
+currentUser.phone;
+
+walletBalance.innerText=
+currentUser.wallet||0;
+
+showMyReviews();
+
+}
+
+function saveProfile(){
+
+currentUser.name=
+profileName.value.trim();
+
+currentUser.phone=
+profilePhone.value.trim();
+
+updateCurrentUser();
+
+userBadge.innerText=
+"👤 "+currentUser.name;
+
+notify("Profile updated.");
+
+}
+
+function addWallet(amount){
+
+currentUser.wallet=
+(currentUser.wallet||0)+amount;
+
+updateCurrentUser();
+
+walletBalance.innerText=
+currentUser.wallet;
+
+notify("₹"+amount+" added to wallet.");
+
+}
+
+
+/* =====================================================
+REVIEWS
+===================================================== */
+
+function openReview(id){
+
+reviewBookingId.value=id;
+
+reviewText.value="";
+
+reviewModal.classList.add("active");
+
+}
+
+function closeReview(){
+
+reviewModal.classList.remove("active");
+
+}
+
+function submitReview(){
+
+let id=
+reviewBookingId.value;
+
+let booking=
+getBookings().find(
+b=>b.id===id
+);
+
+if(!booking)return;
+
+let review={
+
+movie:booking.movie,
+
+rating:
+Number(reviewRating.value),
+
+text:
+reviewText.value,
+
+date:
+new Date().toLocaleDateString()
+
+};
+
+currentUser.reviews=
+currentUser.reviews||[];
+
+currentUser.reviews.push(review);
+
+updateCurrentUser();
+
+closeReview();
+
+showProfile();
+
+notify("Review submitted.");
+
+}
+
+function showMyReviews(){
+
+let reviews=
+currentUser.reviews||[];
+
+myReviews.innerHTML="";
+
+if(!reviews.length){
+
+myReviews.innerHTML=
+"<p style='color:#94a3b8'>No reviews yet.</p>";
+
+return;
+
+}
+
+reviews.forEach(review=>{
+
+myReviews.innerHTML+=`
+
+<div class="history">
+
+<h4>
+${review.movie}
+</h4>
+
+<p>
+${"⭐".repeat(review.rating)}
+</p>
+
+<p>
+${review.text}
+</p>
+
+<small>
+${review.date}
+</small>
+
+</div>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+ADMIN DASHBOARD
+===================================================== */
+
+function showAdmin(){
+
+if(currentUser.role!=="admin"){
+
+return;
+
+}
+
+showPage("adminPage");
+
+refreshAdmin();
+
+}
+
+function refreshAdmin(){
+
+let users=
+getUsers();
+
+let bookings=
+getBookings();
+
+let confirmed=
+bookings.filter(
+b=>b.status==="Confirmed"
+);
+
+let cancelled=
+bookings.filter(
+b=>b.status==="Cancelled"
+);
+
+let revenue=
+confirmed.reduce(
+(sum,b)=>sum+b.total,
+0
+);
+
+statUsers.innerText=
+users.length;
+
+statBookings.innerText=
+bookings.length;
+
+statConfirmed.innerText=
+confirmed.length;
+
+statCancelled.innerText=
+cancelled.length;
+
+statRevenue.innerText=
+revenue;
+
+renderAdminMovies();
+
+renderAdminBookings();
+
+}
+
+
+/* =====================================================
+ADMIN MOVIES
+===================================================== */
+
+function renderAdminMovies(){
+
+adminMovies.innerHTML="";
+
+movies.forEach(movie=>{
+
+adminMovies.innerHTML+=`
+
+<div class="history">
+
+<h3>
+${movie.emoji} ${movie.name}
+</h3>
+
+<p>
+Genre: ${movie.genre}
+</p>
+
+<p>
+Rating: ⭐ ${movie.rating}
+</p>
+
+<p>
+Price: ₹${movie.price}
+</p>
+
+<button
+class="btn danger"
+onclick="deleteMovie(${movie.id})">
+
+Delete
+
+</button>
+
+</div>
+
+`;
+
+});
+
+}
+
+function addMovie(){
+
+let name=
+newMovieName.value.trim();
+
+let genre=
+newMovieGenre.value.trim();
+
+let rating=
+newMovieRating.value.trim();
+
+let duration=
+newMovieDuration.value.trim();
+
+let price=
+Number(newMoviePrice.value);
+
+let emoji=
+newMovieEmoji.value.trim()||"🎬";
+
+if(
+!name||
+!genre||
+!rating||
+!duration||
+!price
+){
+
+alert(
+"Please fill all movie details."
+);
+
+return;
+
+}
+
+let movie=
+new Movie(
+Date.now(),
+name,
+genre,
+rating,
+duration,
+price,
+emoji
+);
+
+movies.push(movie);
+
+saveMovieData();
+
+displayMovies();
+
+refreshAdmin();
+
+newMovieName.value="";
+newMovieGenre.value="";
+newMovieRating.value="";
+newMovieDuration.value="";
+newMoviePrice.value="";
+newMovieEmoji.value="";
+
+notify("Movie added successfully.");
+
+}
+
+function deleteMovie(id){
+
+if(
+!confirm(
+"Delete this movie?"
+)
+){
+
+return;
+
+}
+
+movies=
+movies.filter(
+m=>m.id!==id
+);
+
+saveMovieData();
+
+displayMovies();
+
+refreshAdmin();
+
+notify("Movie deleted.");
+
+}
+
+
+/* =====================================================
+ADMIN BOOKINGS
+===================================================== */
+
+function renderAdminBookings(){
+
+let bookings=
+getBookings();
+
+adminBookingTable.innerHTML="";
+
+bookings
+.slice()
+.reverse()
+.forEach(booking=>{
+
+let user=
+getUsers().find(
+u=>u.id===booking.userId
+);
+
+adminBookingTable.innerHTML+=`
+
+<tr>
+
+<td>${booking.id}</td>
+
+<td>
+${user?user.name:booking.customer}
+</td>
+
+<td>${booking.movie}</td>
+
+<td>${booking.date}</td>
+
+<td>
+${booking.seats
+.map(s=>s.number)
+.join(", ")}
+</td>
+
+<td>₹${booking.total}</td>
+
+<td>${booking.status}</td>
+
+</tr>
+
+`;
+
+});
+
+}
+
+
+/* =====================================================
+NOTIFICATION
+===================================================== */
+
+function notify(message){
+
+notification.innerText=
+message;
+
+notification.classList.add("show");
+
+setTimeout(
+()=>{
+notification.classList.remove("show");
+},
+2500
+);
+
+}
+
+
+/* =====================================================
+START
+===================================================== */
+
+document.addEventListener(
+"DOMContentLoaded",
+()=>{
+
+initialize();
+
+}
+);
+
+</script>
+
+</body>
+</html>
